@@ -6,8 +6,7 @@ const generateHTML = ({ name, location, github, linkedin }) =>
   
   `;
 
-inquirer
-  .prompt([
+const managerQuestions = [
     {
       type: 'input',
       name: 'name',
@@ -15,34 +14,50 @@ inquirer
     },
     {
       type: 'input',
-      name: 'location',
-      message: 'Where are you from?',
+      name: 'employeeID',
+      message: 'What is your employee ID?',
     },
     {
       type: 'input',
-      name: 'hobby',
-      message: 'What is your favorite hobby?',
+      name: 'email',
+      message: 'What is your email address?',
     },
     {
       type: 'input',
-      name: 'food',
-      message: 'What is your favorite food?',
-    },
+      name: 'officeNumber',
+      message: 'What is your office number?',
+    }
+  ]
+
+  const employeeTypeQuestions = [
     {
-      type: 'input',
-      name: 'github',
-      message: 'Enter your GitHub Username',
-    },
-    {
-      type: 'input',
-      name: 'linkedin',
-      message: 'Enter your LinkedIn URL.',
-    },
-  ])
-  .then((answers) => {
+        type: 'list',
+        name: 'name',
+        message: ['engineer', 'intern']
+      },
+      {
+        type: 'input',
+        name: 'employeeID',
+        message: 'What is your employee ID?',
+      },
+      {
+        type: 'input',
+        name: 'email',
+        message: 'What is your email address?',
+      },
+      {
+        type: 'input',
+        name: 'officeNumber',
+        message: 'What is your office number?',
+      }
+  ]
+
+  managerQuestions.then((answers) => {
     const htmlPageContent = generateHTML(answers);
 
     fs.writeFile('index.html', htmlPageContent, (err) =>
       err ? console.log(err) : console.log('Successfully created index.html!')
     );
   });
+
+
