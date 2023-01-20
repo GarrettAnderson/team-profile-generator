@@ -88,14 +88,45 @@ const managerQuestions = [
       }
   ]
 
+
+  function addTeamMemberType() {
+    inquirer.prompt(employeeTypeQuestions)
+        .then((teamMemberTypeAnswers) => {
+
+        })
+        .catch((error) => {
+            if(error.isTtyError) {
+                console.log(error)
+            } else {
+                console.log(error)
+            }
+        })
+  }
+
   function promptAddTeamMember() {
     inquirer.prompt(addTeamMember)
         .then((confirmedAnswer) => {
 
             if (confirmedAnswer.addTeamMember === 'Yes') {
                 console.log('y was chosen')
+                // if yes, continue with asking to add an engineer or intern
+                // after adding an enginer or intern, prompt to add another team member
+                // if chose not to add another team member, break prompt and break the
             }
+            // if no, break the prompt and generate html with just the manager card
             console.log('n was chosen')
+
+        // fs.writeFile('index.html', htmlPageContent, (err) =>
+        //   err ? console.log(err) : console.log('Successfully created index.html!')
+        // );
+
+        })
+        .catch((error) => {
+            if(error.isTtyError) {
+                console.log(error)
+            } else {
+                console.log(error)
+            }
         })
   }
 
@@ -113,7 +144,14 @@ const managerQuestions = [
         // fs.writeFile('index.html', htmlPageContent, (err) =>
         //   err ? console.log(err) : console.log('Successfully created index.html!')
         // );
-      });
+      })
+      .catch((error) => {
+        if(error.isTtyError) {
+            console.log(error)
+        } else {
+            console.log(error)
+        }
+    })
   }
 
   promptQuestions()
