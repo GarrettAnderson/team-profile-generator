@@ -69,7 +69,8 @@ const managerQuestions = [
     {
         type: 'list',
         name: 'name',
-        message: ['engineer', 'intern']
+        message: 'What type of employee would you like to add?',
+        choices: ['engineer', 'intern']
       },
       {
         type: 'input',
@@ -92,7 +93,11 @@ const managerQuestions = [
   function addTeamMemberType() {
     inquirer.prompt(employeeTypeQuestions)
         .then((teamMemberTypeAnswers) => {
+            // console.log(teamMemberTypeAnswers)
+            console.log('add team member type prompt')
 
+            // prompt to add a team member
+            promptAddTeamMember()
         })
         .catch((error) => {
             if(error.isTtyError) {
@@ -107,14 +112,16 @@ const managerQuestions = [
     inquirer.prompt(addTeamMember)
         .then((confirmedAnswer) => {
 
-            if (confirmedAnswer.addTeamMember === 'Yes') {
+            if (confirmedAnswer.addTeamMember === true) {
                 console.log('y was chosen')
                 // if yes, continue with asking to add an engineer or intern
                 // after adding an enginer or intern, prompt to add another team member
                 // if chose not to add another team member, break prompt and break the
+                addTeamMemberType()
+            } else {
+                // if no, break the prompt and generate html with just the manager card
+                console.log('n was chosen')
             }
-            // if no, break the prompt and generate html with just the manager card
-            console.log('n was chosen')
 
         // fs.writeFile('index.html', htmlPageContent, (err) =>
         //   err ? console.log(err) : console.log('Successfully created index.html!')
