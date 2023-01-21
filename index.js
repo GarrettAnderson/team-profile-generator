@@ -1,6 +1,9 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+let managerAnswerResutls = []
+let teamMemberTypeAnswerResults = []
+
 const generateHTML = ({ name, employeeID, email, officeNumber }) =>
   `
   <!DOCTYPE html>
@@ -16,23 +19,39 @@ const generateHTML = ({ name, employeeID, email, officeNumber }) =>
         <div class="container">
         <h1 class="display-4">My Team</h1>
         </div>
+        </header>
         <div class="card" style="width: 18rem;">
             <div class="card-header">
             ${name}
             </div>
             <ul class="list-group list-group-flush">
-            <li class="list-group-item">${employeeID}</li>
-            <li class="list-group-item">${email}</li>
-            <li class="list-group-item">${officeNumber}</li>
+            <li class="list-group-item">ID: ${employeeID}</li>
+            <li class="list-group-item">Email: ${email}</li>
+            <li class="list-group-item">Office Number: ${officeNumber}</li>
             </ul>
         </div>
-    </header>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     </body>
     </html>
 
   `;
+
+
+const employeeTypeCardHTML = ({ name, employeeID, email, github }) => 
+`
+    <div class="card" style="width: 18rem;">
+    <div class="card-header">
+    ${name}
+    </div>
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item">ID: ${employeeID}</li>
+    <li class="list-group-item">Email: ${email}</li>
+    <li class="list-group-item">Github: ${github}</li>
+    </ul>
+    </div>
+
+`
 
 const managerQuestions = [
     {
@@ -93,7 +112,9 @@ const managerQuestions = [
   function addTeamMemberType() {
     inquirer.prompt(employeeTypeQuestions)
         .then((teamMemberTypeAnswers) => {
-            // console.log(teamMemberTypeAnswers)
+            teamMemberTypeAnswerResults = teamMemberTypeAnswers
+            console.log(teamMemberTypeAnswerResults)
+            console.log(managerAnswerResutls)
             console.log('add team member type prompt')
 
             // prompt to add a team member
@@ -119,8 +140,19 @@ const managerQuestions = [
                 // if chose not to add another team member, break prompt and break the
                 addTeamMemberType()
             } else {
-                // if no, break the prompt and generate html with just the manager card
+                // if no, break the prompt and generate html with the manager card and extra employees if there are any
                 console.log('n was chosen')
+                const htmlPageContent = generateHTML(managerAnswerResutls)
+
+                const htmlToAddForEmployee = employeeTypeCardHTML(teamMemberTypeAnswerResults)
+
+                fs.writeFile('index.html', htmlPageContent, (err) =>
+                err ? console.log(err) : console.log('Successfully created index.html!')
+                );
+
+                fs.appendFile('index.html', htmlToAddForEmployee, (err) =>
+                err ? console.log(err) : console.log('Successfully created index.html!')
+                );
             }
 
         // fs.writeFile('index.html', htmlPageContent, (err) =>
@@ -141,7 +173,7 @@ const managerQuestions = [
   function promptQuestions() {
     inquirer.prompt(managerQuestions)
         .then((managerAnswers) => {
-        const htmlPageContent = generateHTML(managerAnswers);
+        managerAnswerResutls = managerAnswers;
             
         promptAddTeamMember()
         
