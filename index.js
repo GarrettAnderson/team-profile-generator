@@ -1,8 +1,6 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const got = require('got');
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
+var HTMLParser = require('node-html-parser');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
@@ -165,16 +163,15 @@ const managerQuestions = [
                 // console.log('y was chosen')
                 // console.log(confirmedAnswer)
 
-                // if yes, create a new manager object and add to teamMembers array
-                // let manager = new Manager('jon doe', 1, 'email@email.com', 12345)
-                let manager = new Manager(managerAnswerResutls.name, managerAnswerResutls.employeeID,managerAnswerResutls.email, managerAnswerResutls.officeNumber)
-                console.log(manager)
-                teamMembers.push(manager)
-                // console.log(teamMembers)
-                // if yes, continue with asking to add an engineer or intern
-                // after adding an enginer or intern, prompt to add another team member
-                // if chose not to add another team member, break prompt and break cycle
-                addTeamMemberType()
+               
+                // if manager already exists in the array, dont make new manager
+    
+                    // console.log(teamMembers)
+                    // if yes, continue with asking to add an engineer or intern
+                    // after adding an enginer or intern, prompt to add another team member
+                    // if chose not to add another team member, break prompt and break cycle
+                    addTeamMemberType()
+                
             } else {
                 // if no, break the prompt and generate html with the manager card and extra employees if there are any
                 console.log('n was chosen')
@@ -184,13 +181,16 @@ const managerQuestions = [
 
                 const htmlToAddForEmployee = employeeTypeCardHTML(teamMemberTypeAnswerResults)
 
-                fs.writeFile('index.html', htmlPageContent, (err) =>
-                err ? console.log(err) : console.log('Successfully created a manager but no one else!')
-                );
+                for(var i = 0; i < teamMembers.length; i++) {
 
+                }
 
-                appendEmployeeData()
+                // Print HTML
+                // fs.writeFile('index.html', htmlPageContent, (err) =>
+                // err ? console.log(err) : console.log('Successfully created a manager but no one else!')
+                // );
 
+                // appendEmployeeData()
             }
 
         })
@@ -209,29 +209,18 @@ const managerQuestions = [
     // fs.readFile('index.html', htmlToAddForEmployee, (err) => 
     // err ? console.log(err) : console.log('Successfully created index.html!')
     // );
-    // fs.readFile('index.html', 'utf8', (err,html)=>{
-    //     if(err){
-    //        throw err;
-    //     }
+    fs.readFile('index.html', 'utf8', (err,html)=>{
+        if(err){
+           throw err;
+        }
      
-    //     const root = parse(html);
-    //     const body = root.querySelector('body');
-    //     //body.set_content('<div id = "asdf"></div>');
-    //     body.appendChild('<div id = "asdf"></div>');
+        const root = HTMLParser.parse(html);
+        const body = root.querySelector('body');
+        //body.set_content('<div id = "asdf"></div>');
+        body.appendChild('<div id = "asdf"></div>');
      
-    //     console.log(root.toString()); // This you can write back to file!
-    //   });
-
-
-
-    got('./index.html').then(response => {
-        const dom = new JSDOM(response.body);
-        console.log(dom.window.document.querySelector('employee-info'));
-      }).catch(err => {
-        console.log(err);
+        console.log(root.toString()); // This you can write back to file!
       });
-
-
 
   }
 
@@ -240,7 +229,11 @@ const managerQuestions = [
     inquirer.prompt(managerQuestions)
         .then((managerAnswers) => {
         managerAnswerResutls = managerAnswers;
-        
+        // if yes, create a new manager object and add to teamMembers array
+        // let manager = new Manager('jon doe', 1, 'email@email.com', 12345)
+        let manager = new Manager(managerAnswerResutls.name, managerAnswerResutls.employeeID,managerAnswerResutls.email, managerAnswerResutls.officeNumber)
+        console.log(manager)
+        teamMembers.push(manager)
         promptAddTeamMember()
         
     
