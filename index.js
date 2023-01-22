@@ -1,6 +1,8 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const parse = require('node-html-parser').parse;
+const got = require('got');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
@@ -144,7 +146,7 @@ const managerQuestions = [
             console.log('add team member type prompt')
 
             // prompt to add a team member
-            // promptAddTeamMember()
+            promptAddTeamMember()
         })
         .catch((error) => {
             if(error.isTtyError) {
@@ -166,7 +168,7 @@ const managerQuestions = [
                 // if yes, create a new manager object and add to teamMembers array
                 // let manager = new Manager('jon doe', 1, 'email@email.com', 12345)
                 let manager = new Manager(managerAnswerResutls.name, managerAnswerResutls.employeeID,managerAnswerResutls.email, managerAnswerResutls.officeNumber)
-                // console.log(manager)
+                console.log(manager)
                 teamMembers.push(manager)
                 // console.log(teamMembers)
                 // if yes, continue with asking to add an engineer or intern
@@ -177,8 +179,6 @@ const managerQuestions = [
                 // if no, break the prompt and generate html with the manager card and extra employees if there are any
                 console.log('n was chosen')
                 // if no, manager is still created
-                let manager = new Manager(managerAnswerResutls.name, managerAnswerResutls.employeeID,managerAnswerResutls.email, managerAnswerResutls.officeNumber)
-                teamMembers.push(manager)
                 console.log(teamMembers)
                 const htmlPageContent = generateHTML(managerAnswerResutls)
 
@@ -209,20 +209,29 @@ const managerQuestions = [
     // fs.readFile('index.html', htmlToAddForEmployee, (err) => 
     // err ? console.log(err) : console.log('Successfully created index.html!')
     // );
+    // fs.readFile('index.html', 'utf8', (err,html)=>{
+    //     if(err){
+    //        throw err;
+    //     }
+     
+    //     const root = parse(html);
+    //     const body = root.querySelector('body');
+    //     //body.set_content('<div id = "asdf"></div>');
+    //     body.appendChild('<div id = "asdf"></div>');
+     
+    //     console.log(root.toString()); // This you can write back to file!
+    //   });
 
-    fs.readFile('index.html', 'utf8', (err,html)=>{
-        if(err){
-           throw err;
-        }
-     
-        const root = parse(html);
-     
-        const body = root.querySelector('body');
-        //body.set_content('<div id = "asdf"></div>');
-        body.appendChild(employeeTypeCardHTML);
-     
-        console.log(root.toString()); // This you can write back to file!
+
+
+    got('./index.html').then(response => {
+        const dom = new JSDOM(response.body);
+        console.log(dom.window.document.querySelector('employee-info'));
+      }).catch(err => {
+        console.log(err);
       });
+
+
 
   }
 
