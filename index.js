@@ -158,7 +158,7 @@ const managerQuestions = [
   function promptAddTeamMember() {
     inquirer.prompt(addTeamMember)
         .then((confirmedAnswer) => {
-
+            // if select y to add a team member (AFTER MANAGER) 
             if (confirmedAnswer.addTeamMember === true) {
                 // console.log('y was chosen')
                 // console.log(confirmedAnswer)
