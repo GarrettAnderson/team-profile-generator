@@ -1,8 +1,13 @@
 const inquirer = require('inquirer');
+const parse = require('node-html-parser').parse;
 const fs = require('fs');
+const Manager = require('./lib/Manager');
+
 
 let managerAnswerResutls = []
 let teamMemberTypeAnswerResults = []
+
+let teamMembers = []
 
 const generateHTML = ({ name, employeeID, email, officeNumber }) =>
   `
@@ -19,7 +24,9 @@ const generateHTML = ({ name, employeeID, email, officeNumber }) =>
         <div class="container">
         <h1 class="display-4">My Team</h1>
         </div>
-        </header>
+    </header>
+    
+    <main class="employee-info">
         <div class="card" style="width: 18rem;">
             <div class="card-header">
             ${name}
@@ -30,6 +37,7 @@ const generateHTML = ({ name, employeeID, email, officeNumber }) =>
             <li class="list-group-item">Office Number: ${officeNumber}</li>
             </ul>
         </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     </body>
@@ -41,14 +49,14 @@ const generateHTML = ({ name, employeeID, email, officeNumber }) =>
 const employeeTypeCardHTML = ({ name, employeeID, email, github }) => 
 `
     <div class="card" style="width: 18rem;">
-    <div class="card-header">
-    ${name}
-    </div>
-    <ul class="list-group list-group-flush">
-    <li class="list-group-item">ID: ${employeeID}</li>
-    <li class="list-group-item">Email: ${email}</li>
-    <li class="list-group-item">Github: ${github}</li>
-    </ul>
+        <div class="card-header">
+        ${name}
+        </div>
+        <ul class="list-group list-group-flush">
+        <li class="list-group-item">ID: ${employeeID}</li>
+        <li class="list-group-item">Email: ${email}</li>
+        <li class="list-group-item">Github: ${github}</li>
+        </ul>
     </div>
 
 `
@@ -87,9 +95,14 @@ const managerQuestions = [
   const employeeTypeQuestions = [
     {
         type: 'list',
-        name: 'name',
+        name: 'role',
         message: 'What type of employee would you like to add?',
         choices: ['engineer', 'intern']
+      },
+      {
+        type: 'input',
+        name: 'name',
+        message: 'What is your name?',
       },
       {
         type: 'input',
@@ -103,8 +116,8 @@ const managerQuestions = [
       },
       {
         type: 'input',
-        name: 'officeNumber',
-        message: 'What is your office number?',
+        name: 'GithubUserName',
+        message: 'What is your Github username?',
       }
   ]
 
@@ -114,11 +127,11 @@ const managerQuestions = [
         .then((teamMemberTypeAnswers) => {
             teamMemberTypeAnswerResults = teamMemberTypeAnswers
             console.log(teamMemberTypeAnswerResults)
-            console.log(managerAnswerResutls)
+            // console.log(managerAnswerResutls)
             console.log('add team member type prompt')
 
             // prompt to add a team member
-            promptAddTeamMember()
+            // promptAddTeamMember()
         })
         .catch((error) => {
             if(error.isTtyError) {
@@ -134,30 +147,36 @@ const managerQuestions = [
         .then((confirmedAnswer) => {
 
             if (confirmedAnswer.addTeamMember === true) {
-                console.log('y was chosen')
+                // console.log('y was chosen')
+                // console.log(confirmedAnswer)
+
+                // if yes, create a new manager object and add to teamMembers array
+                // let manager = new Manager('jon doe', 1, 'email@email.com', 12345)
+                let manager = new Manager(managerAnswerResutls.name, managerAnswerResutls.employeeID,managerAnswerResutls.email, managerAnswerResutls.officeNumber)
+                // console.log(manager)
+                teamMembers.push(manager)
+                // console.log(teamMembers)
                 // if yes, continue with asking to add an engineer or intern
                 // after adding an enginer or intern, prompt to add another team member
-                // if chose not to add another team member, break prompt and break the
+                // if chose not to add another team member, break prompt and break cycle
                 addTeamMemberType()
             } else {
                 // if no, break the prompt and generate html with the manager card and extra employees if there are any
                 console.log('n was chosen')
+                // if no, manager is still created
+                let manager = new Manager(managerAnswerResutls.name, managerAnswerResutls.employeeID,managerAnswerResutls.email, managerAnswerResutls.officeNumber)
+                teamMembers.push(manager)
+                console.log(teamMembers)
                 const htmlPageContent = generateHTML(managerAnswerResutls)
 
                 const htmlToAddForEmployee = employeeTypeCardHTML(teamMemberTypeAnswerResults)
 
                 fs.writeFile('index.html', htmlPageContent, (err) =>
-                err ? console.log(err) : console.log('Successfully created index.html!')
+                err ? console.log(err) : console.log('Successfully created a manager but no one else!')
                 );
 
-                fs.appendFile('index.html', htmlToAddForEmployee, (err) =>
-                err ? console.log(err) : console.log('Successfully created index.html!')
-                );
+
             }
-
-        // fs.writeFile('index.html', htmlPageContent, (err) =>
-        //   err ? console.log(err) : console.log('Successfully created index.html!')
-        // );
 
         })
         .catch((error) => {
@@ -169,12 +188,35 @@ const managerQuestions = [
         })
   }
 
+  function appendEmployeeData() {
+
+    // const employeeDataTag = querySelector()
+    // fs.readFile('index.html', htmlToAddForEmployee, (err) => 
+    // err ? console.log(err) : console.log('Successfully created index.html!')
+    // );
+
+    fs.readFile('index.html', 'utf8', (err,html)=>{
+        if(err){
+           throw err;
+        }
+     
+        const root = parse(html);
+     
+        const body = root.querySelector('body');
+        //body.set_content('<div id = "asdf"></div>');
+        body.appendChild(employeeTypeCardHTML);
+     
+        console.log(root.toString()); // This you can write back to file!
+      });
+
+  }
+
 
   function promptQuestions() {
     inquirer.prompt(managerQuestions)
         .then((managerAnswers) => {
         managerAnswerResutls = managerAnswers;
-            
+        
         promptAddTeamMember()
         
     
