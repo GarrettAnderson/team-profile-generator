@@ -1,7 +1,9 @@
 const inquirer = require('inquirer');
-const parse = require('node-html-parser').parse;
 const fs = require('fs');
+const parse = require('node-html-parser').parse;
 const Manager = require('./lib/Manager');
+const Engineer = require('./lib/Engineer');
+const Intern = require('./lib/Intern');
 
 
 let managerAnswerResutls = []
@@ -116,7 +118,7 @@ const managerQuestions = [
       },
       {
         type: 'input',
-        name: 'GithubUserName',
+        name: 'github',
         message: 'What is your Github username?',
       }
   ]
@@ -128,6 +130,17 @@ const managerQuestions = [
             teamMemberTypeAnswerResults = teamMemberTypeAnswers
             console.log(teamMemberTypeAnswerResults)
             // console.log(managerAnswerResutls)
+
+            if (teamMemberTypeAnswerResults.role === 'engineer') {
+                let engineer = new Engineer(teamMemberTypeAnswerResults.role, teamMemberTypeAnswerResults.name, teamMemberTypeAnswerResults.email, teamMemberTypeAnswerResults.github)
+                teamMembers.push(engineer)
+                console.log(teamMembers)
+            } else {
+                let intern = new Intern(teamMemberTypeAnswerResults.role, teamMemberTypeAnswerResults.name, teamMemberTypeAnswerResults.email, teamMemberTypeAnswerResults.github)
+                teamMembers.push(intern)
+                console.log(teamMembers)
+            }
+
             console.log('add team member type prompt')
 
             // prompt to add a team member
@@ -175,6 +188,8 @@ const managerQuestions = [
                 err ? console.log(err) : console.log('Successfully created a manager but no one else!')
                 );
 
+
+                appendEmployeeData()
 
             }
 
