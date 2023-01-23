@@ -11,8 +11,8 @@ let teamMemberTypeAnswerResults = []
 
 let teamMembers = []
 let htmlPageContent
-let teamMemberHTML
-let managerHTML
+let teamMemberHTML = ""
+let managerHTML = ""
 
 const generateHTML = ({ name, employeeID, email, officeNumber }) =>
   `
@@ -242,7 +242,7 @@ const managerQuestions = [
 
         if(teamMembers[i].role === 'Manager') {
             managerHTML = `
-            <div class="card" style="width: 18rem;">
+            <div class="card manager" style="width: 18rem;">
                 <div class="card-header">
                 ${teamMembers[i].name}
                     <p>${teamMembers[i].role}</p>
@@ -254,9 +254,10 @@ const managerQuestions = [
                 </ul>
             </div>
             `
+            console.log(managerHTML)
         } else {
           teamMemberHTML += `
-          <div class="card" style="width: 18rem;">
+          <div class="card team-member" style="width: 18rem;">
             <div class="card-header">
             ${teamMembers[i].name}
                 <p>${teamMembers[i].role}</p>
@@ -271,9 +272,8 @@ const managerQuestions = [
         }
     
     }
+
     htmlPageContent =  beginningHTML + managerHTML + teamMemberHTML + endHTML
-
-
   }
 
   function appendEmployeeData() {

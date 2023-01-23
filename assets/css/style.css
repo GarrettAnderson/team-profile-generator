@@ -1,10 +1,22 @@
+.employee-info {
+    width: 80%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 .pageHeader {
     background-color: #E84756;
     text-align: center;
     color: #fff;
 }
 
+.card {
+    box-shadow: 4px 4px 5px grey;
+}
+
 .card-header {
     background-color: #0077F7 !important;
     color: #fff !important;
 }
+
