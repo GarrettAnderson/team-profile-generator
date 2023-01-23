@@ -1,0 +1,10 @@
+.pageHeader {
+    background-color: #E84756;
+    text-align: center;
+    color: #fff;
+}
+
+.card-header {
+    background-color: #0077F7 !important;
+    color: #fff !important;
+}

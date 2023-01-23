@@ -10,6 +10,9 @@ let managerAnswerResutls = []
 let teamMemberTypeAnswerResults = []
 
 let teamMembers = []
+let htmlPageContent
+let teamMemberHTML
+let managerHTML
 
 const generateHTML = ({ name, employeeID, email, officeNumber }) =>
   `
@@ -38,7 +41,7 @@ const generateHTML = ({ name, employeeID, email, officeNumber }) =>
             <li class="list-group-item">Email: ${email}</li>
             <li class="list-group-item">Office Number: ${officeNumber}</li>
             </ul>
-        </div>
+    </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
@@ -48,20 +51,21 @@ const generateHTML = ({ name, employeeID, email, officeNumber }) =>
   `;
 
 
-const employeeTypeCardHTML = ({ name, employeeID, email, github }) => 
-`
-    <div class="card" style="width: 18rem;">
-        <div class="card-header">
-        ${name}
+const employeeTypeCardHTML = ({ name, employeeID, email, github }) => {
+    `
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+            ${name}
+            </div>
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item">ID: ${employeeID}</li>
+            <li class="list-group-item">Email: ${email}</li>
+            <li class="list-group-item">Github: ${github}</li>
+            </ul>
         </div>
-        <ul class="list-group list-group-flush">
-        <li class="list-group-item">ID: ${employeeID}</li>
-        <li class="list-group-item">Email: ${email}</li>
-        <li class="list-group-item">Github: ${github}</li>
-        </ul>
-    </div>
-
-`
+    
+    `
+}
 
 const managerQuestions = [
     {
@@ -132,11 +136,11 @@ const managerQuestions = [
             // console.log(managerAnswerResutls)
 
             if (teamMemberTypeAnswerResults.role === 'engineer') {
-                let engineer = new Engineer(teamMemberTypeAnswerResults.role, teamMemberTypeAnswerResults.name, teamMemberTypeAnswerResults.email, teamMemberTypeAnswerResults.github)
+                let engineer = new Engineer(teamMemberTypeAnswerResults.name, teamMemberTypeAnswerResults.employeeID, teamMemberTypeAnswerResults.email, teamMemberTypeAnswerResults.github)
                 teamMembers.push(engineer)
                 console.log(teamMembers)
             } else {
-                let intern = new Intern(teamMemberTypeAnswerResults.role, teamMemberTypeAnswerResults.name, teamMemberTypeAnswerResults.email, teamMemberTypeAnswerResults.github)
+                let intern = new Intern(teamMemberTypeAnswerResults.name, teamMemberTypeAnswerResults.employeeID, teamMemberTypeAnswerResults.email, teamMemberTypeAnswerResults.github)
                 teamMembers.push(intern)
                 console.log(teamMembers)
             }
@@ -177,19 +181,19 @@ const managerQuestions = [
                 console.log('n was chosen')
                 // if no, manager is still created
                 console.log(teamMembers)
-                const htmlPageContent = generateHTML(managerAnswerResutls)
+                // const htmlPageContent = generateHTML(managerAnswerResutls)
 
-                const htmlToAddForEmployee = employeeTypeCardHTML(teamMemberTypeAnswerResults)
-
-                for(var i = 0; i < teamMembers.length; i++) {
-
-                }
+                // const htmlToAddForEmployee = employeeTypeCardHTML(teamMemberTypeAnswerResults)
+                generateTeamNemberHTML()
 
                 // Print HTML
-                // fs.writeFile('index.html', htmlPageContent, (err) =>
+                fs.writeFile('index.html', htmlPageContent, (err) =>
+                err ? console.log(err) : console.log('Successfully created a manager but no one else!')
+                );
+
+                // fs.appendFile('index.html', htmlToAddForEmployee, (err) =>
                 // err ? console.log(err) : console.log('Successfully created a manager but no one else!')
                 // );
-
                 // appendEmployeeData()
             }
 
@@ -201,6 +205,75 @@ const managerQuestions = [
                 console.log(error)
             }
         })
+  }
+
+  function generateTeamNemberHTML() {
+
+    const beginningHTML =   `
+    <!DOCTYPE html>
+      <html lang="en">
+      <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <link rel="stylesheet" type="text/css" href="./assets/css/style.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+      <title>Team Profile Generator</title>
+      </head>
+      <body>
+      <header class="p-5 mb-4 header pageHeader">
+          <div class="container">
+          <h1 class="display-4">My Team</h1>
+          </div>
+      </header>
+      
+      <main class="employee-info">
+    `
+
+    const endHTML = `
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    </body>
+    </html>
+    
+    `
+
+    for (var i = 0; i < teamMembers.length; i++) {
+
+        if(teamMembers[i].role === 'Manager') {
+            managerHTML = `
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                ${teamMembers[i].name}
+                    <p>${teamMembers[i].role}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">ID: ${teamMembers[i].id}</li>
+                    <li class="list-group-item">Email: ${teamMembers[i].email}</li>
+                    <li class="list-group-item">Office Number: ${teamMembers[i].officeNumber}</li>
+                </ul>
+            </div>
+            `
+        } else {
+          teamMemberHTML += `
+          <div class="card" style="width: 18rem;">
+            <div class="card-header">
+            ${teamMembers[i].name}
+                <p>${teamMembers[i].role}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item">ID: ${teamMembers[i].id}</li>
+            <li class="list-group-item">Email: ${teamMembers[i].email}</li>
+            <li class="list-group-item">Github: ${teamMembers[i].github}</li>
+            </ul>
+          </div>
+          `  
+        }
+    
+    }
+    htmlPageContent =  beginningHTML + managerHTML + teamMemberHTML + endHTML
+
+
   }
 
   function appendEmployeeData() {
@@ -229,19 +302,13 @@ const managerQuestions = [
     inquirer.prompt(managerQuestions)
         .then((managerAnswers) => {
         managerAnswerResutls = managerAnswers;
-        // if yes, create a new manager object and add to teamMembers array
+        // create a new manager object and add to teamMembers array
         // let manager = new Manager('jon doe', 1, 'email@email.com', 12345)
         let manager = new Manager(managerAnswerResutls.name, managerAnswerResutls.employeeID,managerAnswerResutls.email, managerAnswerResutls.officeNumber)
         console.log(manager)
         teamMembers.push(manager)
         promptAddTeamMember()
-        
-    
-    
-    
-        // fs.writeFile('index.html', htmlPageContent, (err) =>
-        //   err ? console.log(err) : console.log('Successfully created index.html!')
-        // );
+
       })
       .catch((error) => {
         if(error.isTtyError) {
