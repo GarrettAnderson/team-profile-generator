@@ -249,7 +249,7 @@ const managerQuestions = [
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">ID: ${teamMembers[i].id}</li>
-                    <li class="list-group-item">Email: ${teamMembers[i].email}</li>
+                    <li class="list-group-item">Email: <a href="mailto:email@example.com">${teamMembers[i].email}<a/></li>
                     <li class="list-group-item">Office Number: ${teamMembers[i].officeNumber}</li>
                 </ul>
             </div>
@@ -264,8 +264,8 @@ const managerQuestions = [
             </div>
             <ul class="list-group list-group-flush">
             <li class="list-group-item">ID: ${teamMembers[i].id}</li>
-            <li class="list-group-item">Email: ${teamMembers[i].email}</li>
-            <li class="list-group-item">Github: ${teamMembers[i].github}</li>
+            <li class="list-group-item">Email: <a href="mailto:email@example.com">${teamMembers[i].email}</a></li>
+            <li class="list-group-item">Github: <a href="https://github.com/${teamMembers[i].github}">${teamMembers[i].github}</a></li>
             </ul>
           </div>
           `  
@@ -274,27 +274,6 @@ const managerQuestions = [
     }
 
     htmlPageContent =  beginningHTML + managerHTML + teamMemberHTML + endHTML
-  }
-
-  function appendEmployeeData() {
-
-    // const employeeDataTag = querySelector()
-    // fs.readFile('index.html', htmlToAddForEmployee, (err) => 
-    // err ? console.log(err) : console.log('Successfully created index.html!')
-    // );
-    fs.readFile('index.html', 'utf8', (err,html)=>{
-        if(err){
-           throw err;
-        }
-     
-        const root = HTMLParser.parse(html);
-        const body = root.querySelector('body');
-        //body.set_content('<div id = "asdf"></div>');
-        body.appendChild('<div id = "asdf"></div>');
-     
-        console.log(root.toString()); // This you can write back to file!
-      });
-
   }
 
 
