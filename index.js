@@ -7,64 +7,11 @@ const Intern = require('./lib/Intern');
 
 let managerAnswerResutls = []
 let teamMemberTypeAnswerResults = []
-
 let teamMembers = []
 let htmlPageContent
 let teamMemberHTML = ""
 let managerHTML = ""
 
-const generateHTML = ({ name, employeeID, email, officeNumber }) =>
-  `
-  <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
-    <title>Document</title>
-    </head>
-    <body>
-    <header class="p-5 mb-4 header bg-light">
-        <div class="container">
-        <h1 class="display-4">My Team</h1>
-        </div>
-    </header>
-    
-    <main class="employee-info">
-        <div class="card" style="width: 18rem;">
-            <div class="card-header">
-            ${name}
-            </div>
-            <ul class="list-group list-group-flush">
-            <li class="list-group-item">ID: ${employeeID}</li>
-            <li class="list-group-item">Email: ${email}</li>
-            <li class="list-group-item">Office Number: ${officeNumber}</li>
-            </ul>
-    </div>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    </body>
-    </html>
-
-  `;
-
-
-const employeeTypeCardHTML = ({ name, employeeID, email, github }) => {
-    `
-        <div class="card" style="width: 18rem;">
-            <div class="card-header">
-            ${name}
-            </div>
-            <ul class="list-group list-group-flush">
-            <li class="list-group-item">ID: ${employeeID}</li>
-            <li class="list-group-item">Email: ${email}</li>
-            <li class="list-group-item">Github: ${github}</li>
-            </ul>
-        </div>
-    
-    `
-}
 
 const managerQuestions = [
     {
@@ -189,11 +136,6 @@ const managerQuestions = [
                 fs.writeFile('index.html', htmlPageContent, (err) =>
                 err ? console.log(err) : console.log('Successfully created a manager but no one else!')
                 );
-
-                // fs.appendFile('index.html', htmlToAddForEmployee, (err) =>
-                // err ? console.log(err) : console.log('Successfully created a manager but no one else!')
-                // );
-                // appendEmployeeData()
             }
 
         })
@@ -248,7 +190,9 @@ const managerQuestions = [
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">ID: ${teamMembers[i].id}</li>
-                    <li class="list-group-item">Email: <a href="mailto:email@example.com">${teamMembers[i].email}<a/></li>
+                    <li class="list-group-item">Email: 
+                        <a href="mailto:email@example.com" target="_blank">${teamMembers[i].email}</a>
+                    </li>
                     <li class="list-group-item">Office Number: ${teamMembers[i].officeNumber}</li>
                 </ul>
             </div>
@@ -262,9 +206,13 @@ const managerQuestions = [
                 <p>${teamMembers[i].role}</p>
             </div>
             <ul class="list-group list-group-flush">
-            <li class="list-group-item">ID: ${teamMembers[i].id}</li>
-            <li class="list-group-item">Email: <a href="mailto:email@example.com">${teamMembers[i].email}</a></li>
-            <li class="list-group-item">Github: <a href="https://github.com/${teamMembers[i].github}">${teamMembers[i].github}</a></li>
+                <li class="list-group-item">ID: ${teamMembers[i].id}</li>
+                <li class="list-group-item">Email:
+                    <a href="mailto:email@example.com" target="_blank">${teamMembers[i].email}</a>
+                </li>
+                <li class="list-group-item">Github: 
+                    <a href="https://github.com/${teamMembers[i].github}" target="_blank">${teamMembers[i].github}</a>
+                </li>
             </ul>
           </div>
           `  
